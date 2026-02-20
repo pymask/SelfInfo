@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>我的数字花园</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="aurora"></div>
+    <header class="hero" id="home">
+      <nav class="navbar glass">
+        <h1 class="logo">Moonlight Journal</h1>
+        <ul id="nav-links">
+          <li><a href="#home">主页</a></li>
+          <li><a href="#music">音乐</a></li>
+          <li><a href="#studio">管理中心</a></li>
+        </ul>
+      </nav>
+      <div class="hero-content">
+        <p class="chip">PERSONAL WEBSITE · 2026</p>
+        <h2 id="hero-title">你好，我是一个在代码与生活之间写诗的人。</h2>
+        <p id="hero-description">
+          我把学习、工作、生活的片段都收藏在这里。希望你看见的，不只是履历，而是一个持续生长的人。
+        </p>
+        <div class="hero-cta">
+          <a class="cta" href="#studio">开始编辑网站</a>
+          <a class="ghost" href="#modules-container">浏览模块</a>
+        </div>
+      </div>
+      <div class="stats glass">
+        <div><strong id="stat-module-count">0</strong><span>个模块</span></div>
+        <div><strong id="stat-item-count">0</strong><span>条内容</span></div>
+        <div><strong id="stat-article-count">0</strong><span>篇文章</span></div>
+      </div>
+    </header>
+
+    <main>
+      <!-- CONTENT_MODULES_START -->
+      <div id="modules-container"></div>
+
+      <!-- CONTENT_MODULES_END -->
+
+      <!-- SYSTEM_MODULES_START -->
+      <section class="section" id="music">
+        <h3>🎵 音乐播放</h3>
+        <p>不同状态，不同音乐。点击歌单即可切换。</p>
+        <div class="player glass">
+          <audio id="audio" controls>
+            <source
+              src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3"
+              type="audio/mpeg"
+            />
+            你的浏览器不支持音频播放。
+          </audio>
+          <div class="playlist" id="playlist"></div>
+        </div>
+      </section>
+
+      <section class="section alt" id="studio">
+        <h3>🛠 网站管理中心（模块/内容 CRUD + 外观设置）</h3>
+        <div class="studio-grid">
+          <article class="glass studio-panel">
+            <h4>主页文案编辑</h4>
+            <form id="hero-form" class="article-form">
+              <label>主标题 <input id="hero-title-input" type="text" required /></label>
+              <label>简介 <textarea id="hero-description-input" rows="4" required></textarea></label>
+              <button class="btn-primary" type="submit">保存主页文案</button>
+            </form>
+          </article>
+
+          <article class="glass studio-panel">
+            <h4>模块管理</h4>
+            <form id="module-form" class="article-form">
+              <input id="module-id" type="hidden" />
+              <label>导航名称 <input id="module-nav-label" type="text" required /></label>
+              <label>模块标题 <input id="module-title" type="text" required /></label>
+              <label>展示样式
+                <select id="module-type">
+                  <option value="timeline">时间线</option>
+                  <option value="cards">卡片</option>
+                  <option value="list">列表</option>
+                  <option value="quote">感想</option>
+                  <option value="checklist">成就清单</option>
+                </select>
+              </label>
+              <label>模块说明 <textarea id="module-description" rows="3"></textarea></label>
+              <div class="form-actions">
+                <button class="btn-primary" type="submit">保存模块</button>
+                <button class="btn-secondary hidden" type="button" id="cancel-module-edit">取消编辑</button>
+              </div>
+            </form>
+            <div id="module-list" class="article-list"></div>
+          </article>
+
+          <article class="glass studio-panel">
+            <h4>模块内容管理（增删改查）</h4>
+            <form id="item-form" class="article-form">
+              <input id="item-id" type="hidden" />
+              <label>选择模块
+                <select id="item-module-select"></select>
+              </label>
+              <label>内容标题 <input id="item-title" type="text" required /></label>
+              <label>补充信息（时间/标签） <input id="item-meta" type="text" /></label>
+              <label>详细内容 <textarea id="item-content" rows="4" required></textarea></label>
+              <label class="inline-check"><input id="item-done" type="checkbox" /> 标记已完成（成就清单用）</label>
+              <div class="form-actions">
+                <button class="btn-primary" type="submit">保存内容</button>
+                <button class="btn-secondary hidden" type="button" id="cancel-item-edit">取消编辑</button>
+              </div>
+            </form>
+            <div id="item-list" class="article-list"></div>
+          </article>
+
+          <article class="glass studio-panel">
+            <h4>文章编辑器</h4>
+            <form id="article-form" class="article-form">
+              <label>标题 <input id="article-title" type="text" required /></label>
+              <label>正文 <textarea id="article-content" rows="8" required></textarea></label>
+              <div class="form-actions">
+                <button type="submit" class="btn-primary">发布文章</button>
+                <button type="button" id="cancel-edit" class="btn-secondary hidden">取消编辑</button>
+              </div>
+            </form>
+          </article>
+
+          <article class="glass studio-panel">
+            <h4>文件上传</h4>
+            <p class="tip">可上传本地文件，仅在当前浏览器保存记录（不上传到服务器）。</p>
+            <input id="file-input" type="file" multiple />
+            <ul id="file-list" class="file-list"></ul>
+          </article>
+
+          <article class="glass studio-panel">
+            <h4>站点主题设置</h4>
+            <div class="theme-form">
+              <label>主题色
+                <select id="theme-select">
+                  <option value="default">极光深色（默认）</option>
+                  <option value="midnight">午夜蓝</option>
+                  <option value="sunset">日落紫</option>
+                  <option value="forest">森系绿</option>
+                </select>
+              </label>
+              <label>背景风格
+                <select id="bg-select">
+                  <option value="aurora">极光渐变</option>
+                  <option value="mesh">流体网格</option>
+                  <option value="minimal">简约深色</option>
+                  <option value="stars">星空夜色</option>
+                </select>
+              </label>
+              <label>背景图片 URL（可选）
+                <input id="bg-image-url" type="url" placeholder="https://example.com/bg.jpg" />
+              </label>
+              <div class="form-actions">
+                <button type="button" class="btn-primary" id="apply-theme">应用设置</button>
+                <button type="button" class="btn-secondary" id="reset-theme">恢复默认</button>
+              </div>
+            </div>
+          </article>
+        </div>
+
+        <article class="glass article-list-panel">
+          <h4>已发布文章</h4>
+          <div id="article-list" class="article-list"></div>
+        </article>
+      </section>
+      <!-- SYSTEM_MODULES_END -->
+    </main>
+
+    <footer>
+      <p>© 2026 Moonlight Journal · Make every day count.</p>
+    </footer>
+
+    <script src="script.js"></script>
+  </body>
+</html>
