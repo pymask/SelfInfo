@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>我的数字花园</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="aurora"></div>
+    <header class="hero" id="home">
+      <nav class="navbar glass">
+        <h1 class="logo">Moonlight Journal</h1>
+        <ul>
+          <li><a href="#home">主页</a></li>
+          <li><a href="#study">学习经历</a></li>
+          <li><a href="#work">工作经历</a></li>
+          <li><a href="#life">生活记录</a></li>
+          <li><a href="#thoughts">个人感想</a></li>
+          <li><a href="#music">音乐</a></li>
+          <li><a href="#achievements">成就达成</a></li>
+          <li><a href="#studio">创作中心</a></li>
+        </ul>
+      </nav>
+      <div class="hero-content">
+        <p class="chip">PERSONAL WEBSITE · 2026</p>
+        <h2>你好，我是一个在代码与生活之间写诗的人。</h2>
+        <p>
+          我把学习、工作、生活的片段都收藏在这里。希望你看见的，不只是履历，而是一个持续生长的人。
+        </p>
+        <div class="hero-cta">
+          <a class="cta" href="#studio">开始写文章</a>
+          <a class="ghost" href="#study">浏览经历</a>
+        </div>
+      </div>
+      <div class="stats glass">
+        <div><strong>06+</strong><span>年持续学习</span></div>
+        <div><strong>30+</strong><span>项目实践</span></div>
+        <div><strong>365</strong><span>天记录生活</span></div>
+      </div>
+    </header>
+
+    <main>
+      <section class="section" id="study">
+        <h3>📚 学习经历</h3>
+        <div class="timeline">
+          <article class="glass">
+            <h4>2020 - 2024 · 计算机科学本科</h4>
+            <p>系统学习算法、操作系统、数据库与软件工程，打下完整计算机基础。</p>
+          </article>
+          <article class="glass">
+            <h4>2024 - 至今 · AI + 全栈方向深耕</h4>
+            <p>聚焦前端架构、后端工程化、AI 应用落地与产品体验设计。</p>
+          </article>
+          <article class="glass">
+            <h4>持续进行 · 阅读 + 项目驱动学习</h4>
+            <p>每月阅读、每周复盘、每季度做一个完整项目，保持真实输出。</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="section alt" id="work">
+        <h3>💼 工作经历</h3>
+        <div class="cards">
+          <article class="card glass">
+            <h4>软件开发实习生</h4>
+            <p class="meta">2023.06 - 2023.12</p>
+            <p>负责内部系统模块开发、接口联调与测试支持。</p>
+          </article>
+          <article class="card glass">
+            <h4>全栈开发工程师</h4>
+            <p class="meta">2024.01 - 至今</p>
+            <p>主导需求分析、技术方案设计和上线交付，兼顾性能与体验。</p>
+          </article>
+          <article class="card glass">
+            <h4>自由项目协作者</h4>
+            <p class="meta">长期</p>
+            <p>与不同团队协作，聚焦产品可用性与研发效率提升。</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="section" id="life">
+        <h3>🌿 生活记录</h3>
+        <ul class="list glass">
+          <li>🏃 跑步与力量训练，让长期工作也保持健康状态。</li>
+          <li>📷 记录城市角落和旅行瞬间，收集有温度的光影。</li>
+          <li>🍳 喜欢料理，认为认真做饭也是一种创作。</li>
+          <li>☕ 每周给自己安排固定“慢时段”，读书、散步、思考。</li>
+        </ul>
+      </section>
+
+      <section class="section alt" id="thoughts">
+        <h3>💭 个人感想</h3>
+        <blockquote class="glass">
+          “真正的成长，是把每个平凡日子都过成自己愿意回看的样子。”
+        </blockquote>
+        <p>
+          我相信长期主义、相信作品意识，也相信技术最终是为了让生活更柔软。
+        </p>
+      </section>
+
+      <section class="section" id="music">
+        <h3>🎵 音乐播放</h3>
+        <p>不同状态，不同音乐。点击歌单即可切换。</p>
+        <div class="player glass">
+          <audio id="audio" controls>
+            <source
+              src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3"
+              type="audio/mpeg"
+            />
+            你的浏览器不支持音频播放。
+          </audio>
+          <div class="playlist" id="playlist"></div>
+        </div>
+      </section>
+
+
+      <section class="section alt" id="achievements">
+        <h3>🏆 成就达成</h3>
+        <p>把长期目标拆成可完成的小里程碑，达成后可以勾选，记录你的成长轨迹。</p>
+        <div class="glass achievement-panel">
+          <div class="achievement-head">
+            <strong id="achievement-progress">已达成 0 / 0</strong>
+            <span class="tip">数据保存在本地浏览器</span>
+          </div>
+          <div id="achievement-list" class="achievement-list"></div>
+        </div>
+      </section>
+
+      <section class="section alt" id="studio">
+        <h3>📝 创作中心（上传/编辑文章 + 上传文件）</h3>
+        <div class="studio-grid">
+          <article class="glass studio-panel">
+            <h4>文章编辑器</h4>
+            <form id="article-form" class="article-form">
+              <label>
+                标题
+                <input id="article-title" type="text" required placeholder="例如：我的年度复盘" />
+              </label>
+              <label>
+                正文
+                <textarea
+                  id="article-content"
+                  rows="8"
+                  required
+                  placeholder="写下你的想法、故事或技术总结..."
+                ></textarea>
+              </label>
+              <div class="form-actions">
+                <button type="submit" class="btn-primary">发布文章</button>
+                <button type="button" id="cancel-edit" class="btn-secondary hidden">取消编辑</button>
+              </div>
+            </form>
+          </article>
+
+          <article class="glass studio-panel">
+            <h4>文件上传</h4>
+            <p class="tip">可上传本地文件，仅在当前浏览器保存记录（不上传到服务器）。</p>
+            <input id="file-input" type="file" multiple />
+            <ul id="file-list" class="file-list"></ul>
+          </article>
+
+
+          <article class="glass studio-panel">
+            <h4>站点主题设置</h4>
+            <p class="tip">你可以自行切换网站主题和背景风格，也可以使用背景图 URL。</p>
+            <div class="theme-form">
+              <label>
+                主题色
+                <select id="theme-select">
+                  <option value="default">极光深色（默认）</option>
+                  <option value="midnight">午夜蓝</option>
+                  <option value="sunset">日落紫</option>
+                  <option value="forest">森系绿</option>
+                </select>
+              </label>
+              <label>
+                背景风格
+                <select id="bg-select">
+                  <option value="aurora">极光渐变</option>
+                  <option value="mesh">流体网格</option>
+                  <option value="minimal">简约深色</option>
+                  <option value="stars">星空夜色</option>
+                </select>
+              </label>
+              <label>
+                背景图片 URL（可选）
+                <input id="bg-image-url" type="url" placeholder="https://example.com/bg.jpg" />
+              </label>
+              <div class="form-actions">
+                <button type="button" class="btn-primary" id="apply-theme">应用设置</button>
+                <button type="button" class="btn-secondary" id="reset-theme">恢复默认</button>
+              </div>
+            </div>
+          </article>
+        </div>
+
+        <article class="glass article-list-panel">
+          <h4>已发布文章</h4>
+          <div id="article-list" class="article-list"></div>
+        </article>
+      </section>
+    </main>
+
+    <footer>
+      <p>© 2026 Moonlight Journal · Make every day count.</p>
+    </footer>
+
+    <script src="script.js"></script>
+  </body>
+</html>
