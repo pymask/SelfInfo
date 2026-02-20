@@ -99,6 +99,7 @@ const bgImageInput = document.getElementById("bg-image-url");
 const applyThemeBtn = document.getElementById("apply-theme");
 const resetThemeBtn = document.getElementById("reset-theme");
 
+// --- Storage helpers ---
 function readStorageJSON(key, fallbackValue) {
   const raw = localStorage.getItem(key);
   if (!raw) return fallbackValue;
@@ -142,6 +143,8 @@ function saveAppearance() {
   localStorage.setItem(appearanceStoreKey, JSON.stringify(appearance));
 }
 
+
+// --- Renderers ---
 function renderPlaylist() {
   playlist.innerHTML = "";
   tracks.forEach((track, index) => {
@@ -383,6 +386,8 @@ function syncAppearanceControls() {
   bgImageInput.value = appearance.imageUrl;
 }
 
+
+// --- Event bindings ---
 heroForm.addEventListener("submit", (event) => {
   event.preventDefault();
   heroData = { title: heroTitleInput.value.trim(), description: heroDescriptionInput.value.trim() };
@@ -597,6 +602,8 @@ resetThemeBtn.addEventListener("click", () => {
   applyAppearance();
 });
 
+
+// --- Bootstrap ---
 function renderAll() {
   renderHero();
   renderDynamicNav();

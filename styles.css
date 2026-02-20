@@ -1,3 +1,4 @@
+/* --- Theme tokens --- */
 :root {
   --bg: #070a19;
   --bg-soft: #101427;
@@ -11,6 +12,8 @@
     radial-gradient(circle at 80% -20%, #1a7f9f 0%, transparent 35%);
 }
 
+
+/* --- Base styles --- */
 * {
   box-sizing: border-box;
 }
@@ -45,6 +48,8 @@ body {
   border-radius: 18px;
 }
 
+
+/* --- Layout blocks --- */
 .hero {
   padding: 1.2rem clamp(1rem, 3vw, 3.2rem) 3.5rem;
   max-width: 1220px;
@@ -444,6 +449,8 @@ body[data-bg="stars"] {
     linear-gradient(180deg, #0a1028, #060913);
 }
 
+
+/* --- Admin/Theme controls --- */
 .theme-form {
   display: grid;
   gap: 0.8rem;
