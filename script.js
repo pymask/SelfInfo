@@ -1,632 +1,406 @@
 const tracks = [
-  { title: "专注时刻 · SoundHelix 1", src: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" },
-  { title: "放松片刻 · SoundHelix 2", src: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3" },
-  { title: "夜晚灵感 · SoundHelix 3", src: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3" },
-];
-
-const defaultModules = [
   {
-    id: "study",
-    navLabel: "学习经历",
-    title: "📚 学习经历",
-    type: "timeline",
-    description: "学习是持续迭代的过程。",
-    items: [
-      { id: crypto.randomUUID(), title: "2020 - 2024 · 计算机科学本科", meta: "", content: "系统学习算法、操作系统、数据库与软件工程。", done: false },
-      { id: crypto.randomUUID(), title: "2024 - 至今 · AI + 全栈方向深耕", meta: "", content: "聚焦 AI 应用落地、前后端工程实践与产品体验。", done: false },
-    ],
+    title: "专注时刻 · SoundHelix 1",
+    src: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3",
   },
   {
-    id: "work",
-    navLabel: "工作经历",
-    title: "💼 工作经历",
-    type: "cards",
-    description: "专注交付有价值的产品。",
-    items: [
-      { id: crypto.randomUUID(), title: "全栈开发工程师", meta: "2024.01 - 至今", content: "负责需求、研发到上线全流程。", done: false },
-    ],
+    title: "放松片刻 · SoundHelix 2",
+    src: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3",
   },
   {
-    id: "thoughts",
-    navLabel: "个人感想",
-    title: "💭 个人感想",
-    type: "quote",
-    description: "记录思考，沉淀表达。",
-    items: [
-      { id: crypto.randomUUID(), title: "一句话", meta: "", content: "真正的成长，是把每个平凡日子都过成自己愿意回看的样子。", done: false },
-    ],
+    title: "夜晚灵感 · SoundHelix 3",
+    src: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3",
   },
 ];
 
-const defaultHero = {
-  title: "你好，我是一个在代码与生活之间写诗的人。",
-  description: "我把学习、工作、生活的片段都收藏在这里。希望你看见的，不只是履历，而是一个持续生长的人。",
-};
-
-const defaultAppearance = { theme: "default", background: "aurora", imageUrl: "" };
-
-const articleStoreKey = "personal_site_articles";
-const fileStoreKey = "personal_site_files";
-const appearanceStoreKey = "personal_site_appearance";
-const moduleStoreKey = "personal_site_modules";
-const heroStoreKey = "personal_site_hero";
+const defaultAchievements = [
+  { id: "a1", title: "连续 30 天记录日常", note: "保持稳定写作节奏", done: false },
+  { id: "a2", title: "完成 12 篇高质量文章", note: "每月至少 1 篇深度复盘", done: false },
+  { id: "a3", title: "跑步累计 100 公里", note: "健康与成长并行", done: false },
+  { id: "a4", title: "完成 3 个个人项目发布", note: "让想法真正落地", done: false },
+];
 
 const audio = document.getElementById("audio");
 const playlist = document.getElementById("playlist");
-const navLinks = document.getElementById("nav-links");
-const modulesContainer = document.getElementById("modules-container");
-const statModuleCount = document.getElementById("stat-module-count");
-const statItemCount = document.getElementById("stat-item-count");
-const statArticleCount = document.getElementById("stat-article-count");
-
-const heroTitle = document.getElementById("hero-title");
-const heroDescription = document.getElementById("hero-description");
-const heroForm = document.getElementById("hero-form");
-const heroTitleInput = document.getElementById("hero-title-input");
-const heroDescriptionInput = document.getElementById("hero-description-input");
-
-const moduleForm = document.getElementById("module-form");
-const moduleIdInput = document.getElementById("module-id");
-const moduleNavLabelInput = document.getElementById("module-nav-label");
-const moduleTitleInput = document.getElementById("module-title");
-const moduleTypeInput = document.getElementById("module-type");
-const moduleDescriptionInput = document.getElementById("module-description");
-const moduleList = document.getElementById("module-list");
-const cancelModuleEditBtn = document.getElementById("cancel-module-edit");
-
-const itemForm = document.getElementById("item-form");
-const itemIdInput = document.getElementById("item-id");
-const itemModuleSelect = document.getElementById("item-module-select");
-const itemTitleInput = document.getElementById("item-title");
-const itemMetaInput = document.getElementById("item-meta");
-const itemContentInput = document.getElementById("item-content");
-const itemDoneInput = document.getElementById("item-done");
-const itemList = document.getElementById("item-list");
-const cancelItemEditBtn = document.getElementById("cancel-item-edit");
-
 const articleForm = document.getElementById("article-form");
 const titleInput = document.getElementById("article-title");
 const contentInput = document.getElementById("article-content");
 const articleList = document.getElementById("article-list");
 const cancelEditBtn = document.getElementById("cancel-edit");
-
 const fileInput = document.getElementById("file-input");
 const fileList = document.getElementById("file-list");
-
+const achievementList = document.getElementById("achievement-list");
+const achievementProgress = document.getElementById("achievement-progress");
 const themeSelect = document.getElementById("theme-select");
 const bgSelect = document.getElementById("bg-select");
 const bgImageInput = document.getElementById("bg-image-url");
 const applyThemeBtn = document.getElementById("apply-theme");
 const resetThemeBtn = document.getElementById("reset-theme");
 
-// --- Storage helpers ---
-function bindEvent(element, eventName, handler) {
-  if (!element) return;
-  element.addEventListener(eventName, handler);
-}
+const articleStoreKey = "personal_site_articles";
+const fileStoreKey = "personal_site_files";
+const achievementStoreKey = "personal_site_achievements";
+const appearanceStoreKey = "personal_site_appearance";
+
+const defaultAppearance = {
+  theme: "default",
+  background: "aurora",
+  imageUrl: "",
+};
 
 function readStorageJSON(key, fallbackValue) {
   const raw = localStorage.getItem(key);
   if (!raw) return fallbackValue;
+
   try {
     return JSON.parse(raw);
-  } catch {
+  } catch (error) {
+    console.warn(`Storage key "${key}" contains invalid JSON and was reset.`, error);
     localStorage.removeItem(key);
     return fallbackValue;
   }
 }
 
 let currentEditingId = null;
-let currentModuleEditingId = null;
-let currentItemEditingId = null;
-let articles = readStorageJSON(articleStoreKey, []);
-let files = readStorageJSON(fileStoreKey, []);
-let modules = readStorageJSON(moduleStoreKey, null);
-let heroData = readStorageJSON(heroStoreKey, null);
-let appearance = readStorageJSON(appearanceStoreKey, null);
+const parsedArticles = readStorageJSON(articleStoreKey, []);
+const parsedFiles = readStorageJSON(fileStoreKey, []);
+const parsedAchievements = readStorageJSON(achievementStoreKey, null);
+const parsedAppearance = readStorageJSON(appearanceStoreKey, null);
 
-if (!Array.isArray(articles)) articles = [];
-if (!Array.isArray(files)) files = [];
-if (!Array.isArray(modules) || !modules.length) modules = structuredClone(defaultModules);
-if (!heroData || typeof heroData !== "object") heroData = { ...defaultHero };
-if (!appearance || typeof appearance !== "object") appearance = { ...defaultAppearance };
-appearance = { ...defaultAppearance, ...appearance };
+let articles = Array.isArray(parsedArticles) ? parsedArticles : [];
+let files = Array.isArray(parsedFiles) ? parsedFiles : [];
+let achievements = Array.isArray(parsedAchievements) ? parsedAchievements : [...defaultAchievements];
+let appearance =
+  parsedAppearance && typeof parsedAppearance === "object"
+    ? { ...defaultAppearance, ...parsedAppearance }
+    : { ...defaultAppearance };
 
-function saveModules() {
-  localStorage.setItem(moduleStoreKey, JSON.stringify(modules));
-}
-function saveHero() {
-  localStorage.setItem(heroStoreKey, JSON.stringify(heroData));
-}
-function saveArticles() {
-  localStorage.setItem(articleStoreKey, JSON.stringify(articles));
-}
-function saveFiles() {
-  localStorage.setItem(fileStoreKey, JSON.stringify(files));
-}
-function saveAppearance() {
-  localStorage.setItem(appearanceStoreKey, JSON.stringify(appearance));
-}
-
-
-// --- Renderers ---
 function renderPlaylist() {
   playlist.innerHTML = "";
+
   tracks.forEach((track, index) => {
     const button = document.createElement("button");
     button.className = "track";
-    button.type = "button";
     button.textContent = track.title;
+    button.type = "button";
+
     button.addEventListener("click", () => {
       audio.src = track.src;
       audio.play();
-      [...document.querySelectorAll(".track")].forEach((item, i) => item.classList.toggle("active", i === index));
+      setActive(index);
     });
+
     playlist.appendChild(button);
   });
-  const first = playlist.querySelector(".track");
-  if (first) first.classList.add("active");
+
+  setActive(0);
 }
 
-function renderHero() {
-  if (!heroTitle || !heroDescription || !heroTitleInput || !heroDescriptionInput) return;
-  heroTitle.textContent = heroData.title;
-  heroDescription.textContent = heroData.description;
-  heroTitleInput.value = heroData.title;
-  heroDescriptionInput.value = heroData.description;
-}
-
-function renderDynamicNav() {
-  if (!navLinks) return;
-  [...navLinks.querySelectorAll(".dynamic-nav")].forEach((item) => item.remove());
-  const anchorMusic = navLinks.querySelector('a[href="#music"]')?.parentElement;
-  modules.forEach((module) => {
-    const li = document.createElement("li");
-    li.className = "dynamic-nav";
-    const a = document.createElement("a");
-    a.href = `#${module.id}`;
-    a.textContent = module.navLabel;
-    li.appendChild(a);
-    navLinks.insertBefore(li, anchorMusic);
+function setActive(activeIndex) {
+  const trackButtons = [...document.querySelectorAll(".track")];
+  trackButtons.forEach((button, index) => {
+    button.classList.toggle("active", index === activeIndex);
   });
 }
 
-function createModuleItem(module, item) {
-  const article = document.createElement("article");
-  article.className = module.type === "cards" ? "card glass" : "glass";
-
-  const h4 = document.createElement("h4");
-  h4.textContent = item.title;
-  article.appendChild(h4);
-
-  if (item.meta) {
-    const meta = document.createElement("p");
-    meta.className = "meta";
-    meta.textContent = item.meta;
-    article.appendChild(meta);
-  }
-
-  if (module.type === "quote") {
-    const quote = document.createElement("blockquote");
-    quote.textContent = `“${item.content}”`;
-    article.appendChild(quote);
-  } else {
-    const p = document.createElement(module.type === "list" ? "li" : "p");
-    p.textContent = item.content;
-    if (module.type === "checklist") {
-      p.textContent = `${item.done ? "✅" : "⬜"} ${item.content}`;
-    }
-    article.appendChild(p);
-  }
-
-  return article;
-}
-
-function renderModules() {
-  if (!modulesContainer || !statModuleCount || !statItemCount) return;
-  modulesContainer.innerHTML = "";
-
-  modules.forEach((module, index) => {
-    const section = document.createElement("section");
-    section.className = index % 2 === 0 ? "section" : "section alt";
-    section.id = module.id;
-
-    const h3 = document.createElement("h3");
-    h3.textContent = module.title;
-    section.appendChild(h3);
-
-    if (module.description) {
-      const desc = document.createElement("p");
-      desc.textContent = module.description;
-      section.appendChild(desc);
-    }
-
-    if (module.type === "list") {
-      const ul = document.createElement("ul");
-      ul.className = "list glass";
-      module.items.forEach((item) => {
-        const li = document.createElement("li");
-        li.textContent = item.content;
-        ul.appendChild(li);
-      });
-      section.appendChild(ul);
-    } else if (module.type === "cards") {
-      const cards = document.createElement("div");
-      cards.className = "cards";
-      module.items.forEach((item) => cards.appendChild(createModuleItem(module, item)));
-      section.appendChild(cards);
-    } else {
-      const container = document.createElement("div");
-      container.className = module.type === "timeline" ? "timeline" : "achievement-list";
-      module.items.forEach((item) => container.appendChild(createModuleItem(module, item)));
-      section.appendChild(container);
-    }
-
-    modulesContainer.appendChild(section);
-  });
-
-  statModuleCount.textContent = String(modules.length);
-  statItemCount.textContent = String(modules.reduce((sum, module) => sum + module.items.length, 0));
-}
-
-function renderModuleManager() {
-  if (!moduleList || !itemModuleSelect) return;
-  moduleList.innerHTML = "";
-  itemModuleSelect.innerHTML = "";
-
-  modules.forEach((module) => {
-    const card = document.createElement("article");
-    card.className = "article-item";
-    card.innerHTML = `<strong>${module.navLabel} · ${module.title}</strong><p class="file-meta">样式：${module.type} · ${module.items.length} 条内容</p>`;
-    const actions = document.createElement("div");
-    actions.className = "article-actions";
-
-    const edit = document.createElement("button");
-    edit.type = "button";
-    edit.textContent = "编辑模块";
-    edit.dataset.editModule = module.id;
-
-    const del = document.createElement("button");
-    del.type = "button";
-    del.textContent = "删除模块";
-    del.dataset.deleteModule = module.id;
-
-    actions.appendChild(edit);
-    actions.appendChild(del);
-    card.appendChild(actions);
-    moduleList.appendChild(card);
-
-    const option = document.createElement("option");
-    option.value = module.id;
-    option.textContent = `${module.navLabel} (${module.title})`;
-    itemModuleSelect.appendChild(option);
-  });
-
-  if (modules.length && !itemModuleSelect.value) {
-    itemModuleSelect.value = modules[0].id;
-  }
-
-  renderItemManager();
-}
-
-function renderItemManager() {
-  if (!itemList || !itemModuleSelect) return;
-  itemList.innerHTML = "";
-  const selectedId = itemModuleSelect.value;
-  const module = modules.find((entry) => entry.id === selectedId);
-  if (!module) return;
-
-  module.items.forEach((item) => {
-    const row = document.createElement("article");
-    row.className = "article-item";
-    row.innerHTML = `<strong>${item.title}</strong><p class="file-meta">${item.meta || "无补充信息"}</p><p class="article-content">${item.content}</p>`;
-    const actions = document.createElement("div");
-    actions.className = "article-actions";
-
-    const edit = document.createElement("button");
-    edit.type = "button";
-    edit.textContent = "编辑";
-    edit.dataset.editItem = item.id;
-
-    const del = document.createElement("button");
-    del.type = "button";
-    del.textContent = "删除";
-    del.dataset.deleteItem = item.id;
-
-    actions.appendChild(edit);
-    actions.appendChild(del);
-    row.appendChild(actions);
-    itemList.appendChild(row);
-  });
-}
-
-function renderArticles() {
-  if (!articleList || !statArticleCount) return;
-  articleList.innerHTML = "";
-  statArticleCount.textContent = String(articles.length);
-  if (!articles.length) {
-    articleList.innerHTML = '<p class="tip">还没有文章，开始发布第一篇吧。</p>';
-    return;
-  }
-  [...articles]
-    .sort((a, b) => b.updatedAt - a.updatedAt)
-    .forEach((article) => {
-      const item = document.createElement("article");
-      item.className = "article-item";
-      const date = new Date(article.updatedAt).toLocaleString("zh-CN");
-      item.innerHTML = `<div class="article-head"><strong>${article.title}</strong><span class="file-meta">${date}</span></div><p class="article-content">${article.content}</p>`;
-      const actions = document.createElement("div");
-      actions.className = "article-actions";
-      const edit = document.createElement("button");
-      edit.type = "button";
-      edit.textContent = "编辑";
-      edit.dataset.edit = article.id;
-      const del = document.createElement("button");
-      del.type = "button";
-      del.textContent = "删除";
-      del.dataset.delete = article.id;
-      actions.append(edit, del);
-      item.appendChild(actions);
-      articleList.appendChild(item);
-    });
-}
-
-function renderFiles() {
-  if (!fileList) return;
-  fileList.innerHTML = "";
-  if (!files.length) {
-    fileList.innerHTML = '<li class="tip">暂未上传文件。</li>';
-    return;
-  }
-  files.forEach((file) => {
-    const li = document.createElement("li");
-    li.className = "file-item";
-    li.innerHTML = `<div class="file-row"><div><strong>${file.name}</strong><p class="file-meta">${(file.size / 1024).toFixed(1)} KB · ${file.type || "未知类型"}</p></div><button class="file-remove" data-file-id="${file.id}" type="button">移除</button></div>`;
-    fileList.appendChild(li);
-  });
+function saveAppearance() {
+  localStorage.setItem(appearanceStoreKey, JSON.stringify(appearance));
 }
 
 function applyAppearance() {
   document.body.dataset.theme = appearance.theme;
   document.body.dataset.bg = appearance.background;
-  document.body.style.setProperty("--bg-image", appearance.imageUrl ? `url("${appearance.imageUrl}")` : "none");
+
+  if (appearance.imageUrl) {
+    document.body.style.setProperty("--bg-image", `url(\"${appearance.imageUrl}\")`);
+  } else {
+    document.body.style.setProperty("--bg-image", "none");
+  }
 }
 
 function syncAppearanceControls() {
-  if (!themeSelect || !bgSelect || !bgImageInput) return;
   themeSelect.value = appearance.theme;
   bgSelect.value = appearance.background;
   bgImageInput.value = appearance.imageUrl;
 }
 
-
-// --- Event bindings ---
-bindEvent(heroForm, "submit", (event) => {
-  event.preventDefault();
-  heroData = { title: heroTitleInput.value.trim(), description: heroDescriptionInput.value.trim() };
-  saveHero();
-  renderHero();
-});
-
-bindEvent(moduleForm, "submit", (event) => {
-  event.preventDefault();
-  const payload = {
-    id: moduleIdInput.value || `module-${crypto.randomUUID().slice(0, 8)}`,
-    navLabel: moduleNavLabelInput.value.trim(),
-    title: moduleTitleInput.value.trim(),
-    type: moduleTypeInput.value,
-    description: moduleDescriptionInput.value.trim(),
-    items: [],
+applyThemeBtn.addEventListener("click", () => {
+  appearance = {
+    theme: themeSelect.value,
+    background: bgSelect.value,
+    imageUrl: bgImageInput.value.trim(),
   };
 
-  if (currentModuleEditingId) {
-    modules = modules.map((module) => (module.id === currentModuleEditingId ? { ...module, ...payload, items: module.items } : module));
-  } else {
-    modules.push(payload);
-  }
-
-  saveModules();
-  moduleForm.reset();
-  moduleTypeInput.value = "timeline";
-  moduleIdInput.value = "";
-  currentModuleEditingId = null;
-  cancelModuleEditBtn.classList.add("hidden");
-  renderAll();
-});
-
-bindEvent(moduleList, "click", (event) => {
-  const target = event.target;
-  if (!(target instanceof HTMLElement)) return;
-  const editId = target.dataset.editModule;
-  const deleteId = target.dataset.deleteModule;
-
-  if (editId) {
-    const module = modules.find((entry) => entry.id === editId);
-    if (!module) return;
-    currentModuleEditingId = editId;
-    moduleIdInput.value = module.id;
-    moduleNavLabelInput.value = module.navLabel;
-    moduleTitleInput.value = module.title;
-    moduleTypeInput.value = module.type;
-    moduleDescriptionInput.value = module.description;
-    cancelModuleEditBtn.classList.remove("hidden");
-  }
-
-  if (deleteId) {
-    modules = modules.filter((entry) => entry.id !== deleteId);
-    saveModules();
-    renderAll();
-  }
-});
-
-bindEvent(cancelModuleEditBtn, "click", () => {
-  currentModuleEditingId = null;
-  moduleIdInput.value = "";
-  moduleForm.reset();
-  moduleTypeInput.value = "timeline";
-  cancelModuleEditBtn.classList.add("hidden");
-});
-
-bindEvent(itemModuleSelect, "change", renderItemManager);
-
-bindEvent(itemForm, "submit", (event) => {
-  event.preventDefault();
-  const module = modules.find((entry) => entry.id === itemModuleSelect.value);
-  if (!module) return;
-
-  const payload = {
-    id: itemIdInput.value || crypto.randomUUID(),
-    title: itemTitleInput.value.trim(),
-    meta: itemMetaInput.value.trim(),
-    content: itemContentInput.value.trim(),
-    done: itemDoneInput.checked,
-  };
-
-  if (currentItemEditingId) {
-    module.items = module.items.map((item) => (item.id === currentItemEditingId ? payload : item));
-  } else {
-    module.items.push(payload);
-  }
-
-  saveModules();
-  itemForm.reset();
-  itemIdInput.value = "";
-  currentItemEditingId = null;
-  cancelItemEditBtn.classList.add("hidden");
-  renderAll();
-});
-
-bindEvent(itemList, "click", (event) => {
-  const target = event.target;
-  if (!(target instanceof HTMLElement)) return;
-  const module = modules.find((entry) => entry.id === itemModuleSelect.value);
-  if (!module) return;
-
-  const editId = target.dataset.editItem;
-  const deleteId = target.dataset.deleteItem;
-
-  if (editId) {
-    const item = module.items.find((entry) => entry.id === editId);
-    if (!item) return;
-    currentItemEditingId = editId;
-    itemIdInput.value = item.id;
-    itemTitleInput.value = item.title;
-    itemMetaInput.value = item.meta;
-    itemContentInput.value = item.content;
-    itemDoneInput.checked = Boolean(item.done);
-    cancelItemEditBtn.classList.remove("hidden");
-  }
-
-  if (deleteId) {
-    module.items = module.items.filter((entry) => entry.id !== deleteId);
-    saveModules();
-    renderAll();
-  }
-});
-
-bindEvent(cancelItemEditBtn, "click", () => {
-  currentItemEditingId = null;
-  itemIdInput.value = "";
-  itemForm.reset();
-  cancelItemEditBtn.classList.add("hidden");
-});
-
-bindEvent(articleForm, "submit", (event) => {
-  event.preventDefault();
-  const title = titleInput.value.trim();
-  const content = contentInput.value.trim();
-  if (!title || !content) return;
-
-  if (currentEditingId) {
-    articles = articles.map((article) =>
-      article.id === currentEditingId ? { ...article, title, content, updatedAt: Date.now() } : article,
-    );
-  } else {
-    articles.push({ id: crypto.randomUUID(), title, content, updatedAt: Date.now() });
-  }
-
-  saveArticles();
-  articleForm.reset();
-  currentEditingId = null;
-  cancelEditBtn.classList.add("hidden");
-  renderArticles();
-});
-
-bindEvent(cancelEditBtn, "click", () => {
-  currentEditingId = null;
-  articleForm.reset();
-  cancelEditBtn.classList.add("hidden");
-});
-
-bindEvent(articleList, "click", (event) => {
-  const target = event.target;
-  if (!(target instanceof HTMLElement)) return;
-  const editId = target.dataset.edit;
-  const deleteId = target.dataset.delete;
-
-  if (editId) {
-    const article = articles.find((item) => item.id === editId);
-    if (!article) return;
-    currentEditingId = editId;
-    titleInput.value = article.title;
-    contentInput.value = article.content;
-    cancelEditBtn.classList.remove("hidden");
-  }
-
-  if (deleteId) {
-    articles = articles.filter((item) => item.id !== deleteId);
-    saveArticles();
-    renderArticles();
-  }
-});
-
-bindEvent(fileInput, "change", (event) => {
-  const selectedFiles = [...(event.target.files || [])];
-  if (!selectedFiles.length) return;
-  files = [
-    ...selectedFiles.map((file) => ({ id: crypto.randomUUID(), name: file.name, size: file.size, type: file.type })),
-    ...files,
-  ];
-  saveFiles();
-  renderFiles();
-  fileInput.value = "";
-});
-
-bindEvent(fileList, "click", (event) => {
-  const target = event.target;
-  if (!(target instanceof HTMLElement)) return;
-  const fileId = target.getAttribute("data-file-id");
-  if (!fileId) return;
-  files = files.filter((file) => file.id !== fileId);
-  saveFiles();
-  renderFiles();
-});
-
-bindEvent(applyThemeBtn, "click", () => {
-  appearance = { theme: themeSelect.value, background: bgSelect.value, imageUrl: bgImageInput.value.trim() };
   saveAppearance();
   applyAppearance();
 });
 
-bindEvent(resetThemeBtn, "click", () => {
+resetThemeBtn.addEventListener("click", () => {
   appearance = { ...defaultAppearance };
   saveAppearance();
   syncAppearanceControls();
   applyAppearance();
 });
 
-
-// --- Bootstrap ---
-function renderAll() {
-  renderHero();
-  renderDynamicNav();
-  renderModules();
-  renderModuleManager();
-  renderArticles();
+function saveArticles() {
+  localStorage.setItem(articleStoreKey, JSON.stringify(articles));
 }
+
+function renderArticles() {
+  articleList.innerHTML = "";
+
+  if (!articles.length) {
+    articleList.innerHTML = '<p class="tip">还没有文章，开始发布第一篇吧。</p>';
+    return;
+  }
+
+  articles
+    .slice()
+    .sort((a, b) => b.updatedAt - a.updatedAt)
+    .forEach((article) => {
+      const item = document.createElement("article");
+      item.className = "article-item";
+
+      const date = new Date(article.updatedAt).toLocaleString("zh-CN");
+
+      const head = document.createElement("div");
+      head.className = "article-head";
+
+      const title = document.createElement("strong");
+      title.textContent = article.title;
+
+      const dateEl = document.createElement("span");
+      dateEl.className = "file-meta";
+      dateEl.textContent = date;
+
+      head.appendChild(title);
+      head.appendChild(dateEl);
+
+      const content = document.createElement("p");
+      content.className = "article-content";
+      content.textContent = article.content;
+
+      const actions = document.createElement("div");
+      actions.className = "article-actions";
+
+      const editBtn = document.createElement("button");
+      editBtn.type = "button";
+      editBtn.textContent = "编辑";
+      editBtn.setAttribute("data-edit", article.id);
+
+      const deleteBtn = document.createElement("button");
+      deleteBtn.type = "button";
+      deleteBtn.textContent = "删除";
+      deleteBtn.setAttribute("data-delete", article.id);
+
+      actions.appendChild(editBtn);
+      actions.appendChild(deleteBtn);
+
+      item.appendChild(head);
+      item.appendChild(content);
+      item.appendChild(actions);
+
+      articleList.appendChild(item);
+    });
+}
+
+function resetEditor() {
+  currentEditingId = null;
+  articleForm.reset();
+  cancelEditBtn.classList.add("hidden");
+}
+
+articleForm.addEventListener("submit", (event) => {
+  event.preventDefault();
+
+  const title = titleInput.value.trim();
+  const content = contentInput.value.trim();
+
+  if (!title || !content) return;
+
+  if (currentEditingId) {
+    articles = articles.map((article) =>
+      article.id === currentEditingId
+        ? { ...article, title, content, updatedAt: Date.now() }
+        : article,
+    );
+  } else {
+    articles.push({
+      id: crypto.randomUUID(),
+      title,
+      content,
+      updatedAt: Date.now(),
+    });
+  }
+
+  saveArticles();
+  renderArticles();
+  resetEditor();
+});
+
+cancelEditBtn.addEventListener("click", resetEditor);
+
+articleList.addEventListener("click", (event) => {
+  const target = event.target;
+  if (!(target instanceof HTMLElement)) return;
+
+  const editId = target.getAttribute("data-edit");
+  const deleteId = target.getAttribute("data-delete");
+
+  if (editId) {
+    const article = articles.find((item) => item.id === editId);
+    if (!article) return;
+
+    currentEditingId = article.id;
+    titleInput.value = article.title;
+    contentInput.value = article.content;
+    cancelEditBtn.classList.remove("hidden");
+    titleInput.focus();
+  }
+
+  if (deleteId) {
+    articles = articles.filter((item) => item.id !== deleteId);
+    saveArticles();
+    renderArticles();
+
+    if (currentEditingId === deleteId) {
+      resetEditor();
+    }
+  }
+});
+
+function saveAchievements() {
+  localStorage.setItem(achievementStoreKey, JSON.stringify(achievements));
+}
+
+function renderAchievements() {
+  achievementList.innerHTML = "";
+
+  achievements.forEach((achievement) => {
+    const item = document.createElement("article");
+    item.className = "achievement-item";
+
+    const top = document.createElement("div");
+    top.className = "achievement-top";
+
+    const info = document.createElement("div");
+    const title = document.createElement("strong");
+    title.textContent = achievement.title;
+
+    const note = document.createElement("p");
+    note.className = "file-meta";
+    note.textContent = achievement.note;
+
+    info.appendChild(title);
+    info.appendChild(note);
+
+    const btn = document.createElement("button");
+    btn.type = "button";
+    btn.className = achievement.done ? "badge done" : "badge";
+    btn.textContent = achievement.done ? "已达成" : "未完成";
+    btn.setAttribute("data-achievement-id", achievement.id);
+
+    top.appendChild(info);
+    top.appendChild(btn);
+    item.appendChild(top);
+    achievementList.appendChild(item);
+  });
+
+  const doneCount = achievements.filter((item) => item.done).length;
+  achievementProgress.textContent = `已达成 ${doneCount} / ${achievements.length}`;
+}
+
+achievementList.addEventListener("click", (event) => {
+  const target = event.target;
+  if (!(target instanceof HTMLElement)) return;
+
+  const achievementId = target.getAttribute("data-achievement-id");
+  if (!achievementId) return;
+
+  achievements = achievements.map((item) =>
+    item.id === achievementId ? { ...item, done: !item.done } : item,
+  );
+
+  saveAchievements();
+  renderAchievements();
+});
+
+function saveFiles() {
+  localStorage.setItem(fileStoreKey, JSON.stringify(files));
+}
+
+function renderFiles() {
+  fileList.innerHTML = "";
+
+  if (!files.length) {
+    fileList.innerHTML = '<li class="tip">暂未上传文件。</li>';
+    return;
+  }
+
+  files.forEach((file) => {
+    const li = document.createElement("li");
+    li.className = "file-item";
+
+    const row = document.createElement("div");
+    row.className = "file-row";
+
+    const info = document.createElement("div");
+    const name = document.createElement("strong");
+    name.textContent = file.name;
+
+    const meta = document.createElement("p");
+    meta.className = "file-meta";
+    meta.textContent = `${(file.size / 1024).toFixed(1)} KB · ${file.type || "未知类型"}`;
+
+    info.appendChild(name);
+    info.appendChild(meta);
+
+    const removeBtn = document.createElement("button");
+    removeBtn.type = "button";
+    removeBtn.className = "file-remove";
+    removeBtn.textContent = "移除";
+    removeBtn.setAttribute("data-file-id", file.id);
+
+    row.appendChild(info);
+    row.appendChild(removeBtn);
+    li.appendChild(row);
+    fileList.appendChild(li);
+  });
+}
+
+fileInput.addEventListener("change", (event) => {
+  const selectedFiles = [...(event.target.files || [])];
+  if (!selectedFiles.length) return;
+
+  const newFiles = selectedFiles.map((file) => ({
+    id: crypto.randomUUID(),
+    name: file.name,
+    size: file.size,
+    type: file.type,
+    uploadedAt: Date.now(),
+  }));
+
+  files = [...newFiles, ...files];
+  saveFiles();
+  renderFiles();
+  fileInput.value = "";
+});
+
+fileList.addEventListener("click", (event) => {
+  const target = event.target;
+  if (!(target instanceof HTMLElement)) return;
+
+  const fileId = target.getAttribute("data-file-id");
+  if (!fileId) return;
+
+  files = files.filter((file) => file.id !== fileId);
+  saveFiles();
+  renderFiles();
+});
 
 syncAppearanceControls();
 applyAppearance();
 renderPlaylist();
+renderArticles();
 renderFiles();
-renderAll();
+renderAchievements();
