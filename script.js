@@ -48,11 +48,32 @@ const defaultAppearance = {
   imageUrl: "",
 };
 
+function readStorageJSON(key, fallbackValue) {
+  const raw = localStorage.getItem(key);
+  if (!raw) return fallbackValue;
+
+  try {
+    return JSON.parse(raw);
+  } catch (error) {
+    console.warn(`Storage key "${key}" contains invalid JSON and was reset.`, error);
+    localStorage.removeItem(key);
+    return fallbackValue;
+  }
+}
+
 let currentEditingId = null;
-let articles = JSON.parse(localStorage.getItem(articleStoreKey) || "[]");
-let files = JSON.parse(localStorage.getItem(fileStoreKey) || "[]");
-let achievements = JSON.parse(localStorage.getItem(achievementStoreKey) || "null") || defaultAchievements;
-let appearance = JSON.parse(localStorage.getItem(appearanceStoreKey) || "null") || defaultAppearance;
+const parsedArticles = readStorageJSON(articleStoreKey, []);
+const parsedFiles = readStorageJSON(fileStoreKey, []);
+const parsedAchievements = readStorageJSON(achievementStoreKey, null);
+const parsedAppearance = readStorageJSON(appearanceStoreKey, null);
+
+let articles = Array.isArray(parsedArticles) ? parsedArticles : [];
+let files = Array.isArray(parsedFiles) ? parsedFiles : [];
+let achievements = Array.isArray(parsedAchievements) ? parsedAchievements : [...defaultAchievements];
+let appearance =
+  parsedAppearance && typeof parsedAppearance === "object"
+    ? { ...defaultAppearance, ...parsedAppearance }
+    : { ...defaultAppearance };
 
 function renderPlaylist() {
   playlist.innerHTML = "";
